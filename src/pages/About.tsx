@@ -1,0 +1,125 @@
+import { motion } from 'framer-motion';
+import {
+  Code2, Database, Server, Cloud, Brain, Cog,
+  GitBranch, Terminal, Box, Layers, Shield, Zap
+} from 'lucide-react';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import SectionTitle from '@/components/SectionTitle';
+import SkillCard from '@/components/SkillCard';
+
+const skills = [
+  { name: 'Java', Icon: Code2 },
+  { name: 'Spring Boot', Icon: Layers },
+  { name: 'PostgreSQL', Icon: Database },
+  { name: 'Docker', Icon: Box },
+  { name: 'Kubernetes', Icon: Cloud },
+  { name: 'AWS', Icon: Server },
+  { name: 'Python', Icon: Terminal },
+  { name: 'TensorFlow', Icon: Brain },
+  { name: 'Git', Icon: GitBranch },
+  { name: 'REST APIs', Icon: Zap },
+  { name: 'Security', Icon: Shield },
+  { name: 'CI/CD', Icon: Cog },
+];
+
+const About = () => {
+  return (
+    <>
+      <Navbar />
+      <main className="min-h-screen pt-24">
+        <div className="container mx-auto px-6 py-12">
+          {/* About Section */}
+          <section className="mb-20">
+            <SectionTitle
+              title="About Me"
+              subtitle="Get to know the developer behind the code"
+            />
+
+            <div className="grid gap-12 lg:grid-cols-2">
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="glass-card p-8">
+                  <h3 className="mb-4 text-2xl font-semibold text-foreground">
+                    Backend & AI Developer
+                  </h3>
+                  <div className="space-y-4 text-muted-foreground">
+                    <p>
+                      With over 5 years of experience in software development, I specialize in 
+                      building robust backend systems and implementing AI solutions that solve 
+                      real-world problems.
+                    </p>
+                    <p>
+                      My journey began with a passion for algorithms and data structures, 
+                      which evolved into expertise in distributed systems, microservices 
+                      architecture, and machine learning.
+                    </p>
+                    <p>
+                      I believe in writing clean, maintainable code and following best practices 
+                      in software engineering. When I'm not coding, you'll find me exploring 
+                      new technologies or contributing to open-source projects.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <div className="glass-card p-8">
+                  <h3 className="mb-6 text-2xl font-semibold text-foreground">
+                    Quick Facts
+                  </h3>
+                  <div className="grid grid-cols-2 gap-6">
+                    {[
+                      { label: 'Experience', value: '5+ Years' },
+                      { label: 'Projects', value: '50+' },
+                      { label: 'Coffee Cups', value: '∞' },
+                      { label: 'Happy Clients', value: '30+' },
+                    ].map((fact, i) => (
+                      <motion.div
+                        key={fact.label}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.3 + i * 0.1 }}
+                        className="text-center"
+                      >
+                        <div className="mb-1 text-3xl font-bold gradient-text">{fact.value}</div>
+                        <div className="text-sm text-muted-foreground">{fact.label}</div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </section>
+
+          {/* Skills Section */}
+          <section>
+            <SectionTitle
+              title="Skills & Technologies"
+              subtitle="Tools and technologies I work with daily"
+            />
+
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+              {skills.map((skill, index) => (
+                <SkillCard key={skill.name} {...skill} index={index} />
+              ))}
+            </div>
+          </section>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+};
+
+export default About;
