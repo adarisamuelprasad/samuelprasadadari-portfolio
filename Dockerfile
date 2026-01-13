@@ -11,7 +11,7 @@ COPY backend/src ./src
 RUN mvn clean package -DskipTests
 
 # Use a lightweight JDK image for running the app
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
 # Copy the built jar from the build stage
