@@ -1,73 +1,110 @@
-# Welcome to your Lovable project
+# Adari Samuel Prasad - Personal Portfolio
 
-## Project info
+A full-stack personal portfolio application built with **React (Vite)** for the frontend and **Spring Boot** for the backend.
 
-**URL**: https://lovable.dev/projects/fc12314a-efb9-49f7-843f-a5edfb5ce2a5
+## 🚀 Tech Stack
 
-## How can I edit this code?
+- **Frontend**: React, TypeScript, Tailwind CSS, Framer Motion, Vite
+- **Backend**: Java, Spring Boot, Spring Data JPA, H2 Database (In-Memory)
+- **Tools**: Maven, npm
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 🛠️ Prerequisites
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/fc12314a-efb9-49f7-843f-a5edfb5ce2a5) and start prompting.
+Ensure you have the following installed on your machine:
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Java JDK 17** or higher (Java 24 is compatible)
+- **Node.js** (v18 or higher recommended)
+- **npm** (comes with Node.js)
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🏁 Getting Started
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 1. Backend Setup (Spring Boot)
 
-Follow these steps:
+The backend runs on port `9090` and uses an H2 in-memory database, so no external database setup is required.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1.  Open a terminal and navigate to the `backend` directory:
+    ```bash
+    cd backend
+    ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+2.  Run the application using the Maven Wrapper:
+    -   **Windows (Command Prompt/PowerShell)**:
+        ```powershell
+        ./mvnw spring-boot:run
+        ```
+        *Note: If you encounter syntax errors in PowerShell, try using `cmd /c "mvnw.cmd spring-boot:run"` or run it via a Git Bash terminal as `./mvnw spring-boot:run`.*
 
-# Step 3: Install the necessary dependencies.
-npm i
+    -   **Mac/Linux**:
+        ```bash
+        ./mvnw spring-boot:run
+        ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+3.  The backend should start successfully on `http://localhost:9090`.
+
+### 2. Frontend Setup (React + Vite)
+
+The frontend runs on port `8081` (or `5173` by default, depending on availability).
+
+1.  Open a **new** terminal window and navigate to the `frontend` directory:
+    ```bash
+    cd frontend
+    ```
+
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+
+3.  Start the development server:
+    ```bash
+    npm run dev
+    ```
+
+4.  Open your browser and visit the URL shown in the terminal (usually `http://localhost:8081`).
+
+---
+
+## ⚙️ Configuration
+
+### Backend Configuration
+The backend configuration is located in `backend/src/main/resources/application.properties`.
+
+-   **Port**: `9090`
+-   **Database**: H2 In-Memory (`jdbc:h2:mem:portfolio`)
+-   **Email**: Configured to use Gmail SMTP.
+
+### Frontend Configuration
+The frontend API URL is configured in `frontend/src/api/api.ts`.
+It defaults to `http://localhost:9090/api`.
+
+---
+
+## 🐛 Troubleshooting
+
+### Port 9090 Already in Use
+If the backend fails to start because port `9090` is in use:
+1.  Find the process ID (PID):
+    ```powershell
+    netstat -ano | findstr :9090
+    ```
+2.  Kill the process:
+    ```powershell
+    taskkill /F /PID <PID>
+    ```
+
+### CORS Errors
+If you see CORS errors in the browser console (e.g., "Access-Control-Allow-Origin"), ensure the backend is running and has the correct CORS configuration in the Controllers.
+Currently, it accepts requests from:
+-   `http://localhost:5173`
+-   `http://localhost:8081`
+
+### "Module not found" in Frontend
+If you see import errors, try deleting `node_modules` and reinstalling:
+```bash
+rm -rf node_modules package-lock.json
+npm install
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/fc12314a-efb9-49f7-843f-a5edfb5ce2a5) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
