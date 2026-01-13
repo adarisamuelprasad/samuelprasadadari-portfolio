@@ -1,8 +1,15 @@
 package com.adarisamuelprasad.backend.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -15,12 +22,27 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations(uploadPath);
     }
 
-    @Override
-    public void addCorsMappings(org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*") // Allow ALL origins to fix CORS
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
-                .allowedHeaders("*");
-        // .allowCredentials(true); // Must remain commented out when using "*" origin
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+
+        // Allow ALL origins
+        config.setAllowedOriginPatterns(Collections.singletonList("*"));
+
+        // Allow ALL methods
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"));
+
+        // Allow ALL headers
+        config.setAllowedHeaders(Collections.singletonList("*"));
+
+        // Allow credentials (IMPORTANT: When using setAllowedOriginPatterns("*"), you
+        // CAN use allowCredentials(true))
+        // This is safer than allowedOrigins("*") and solves the credential/wildcard
+        // conflict in recent Spring versions.
+        config.setAllowCredentials(true);
+
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }
