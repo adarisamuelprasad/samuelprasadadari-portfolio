@@ -23,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://localhost:8080",
                         "http://localhost:3000",
                         "https://samuelprasadadari.web.app",
-                        "https://samuelprasadadari-portfolio-542112663662.europe-west1.run.app")
+                        "https://samuelprasadadari-portfolio.onrender.com")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);

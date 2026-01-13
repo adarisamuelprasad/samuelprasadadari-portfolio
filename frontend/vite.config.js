@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => ({
   },
   define: {
     'import.meta.env.VITE_API_URL': JSON.stringify(mode === 'production'
-      ? 'https://samuelprasadadari-portfolio-542112663662.europe-west1.run.app/api'
+      ? 'https://samuelprasadadari-portfolio.onrender.com/api'
       : 'http://localhost:9090/api')
   }
 }));
