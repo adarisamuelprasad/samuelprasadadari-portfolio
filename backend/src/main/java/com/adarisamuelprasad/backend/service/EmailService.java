@@ -18,6 +18,7 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
+    @org.springframework.scheduling.annotation.Async
     public void sendContactEmail(ContactMessage contactMessage) {
         String subject = "📬 New Contact from " + contactMessage.getName();
         String text = "You received a new message from your portfolio website:\n\n" +
