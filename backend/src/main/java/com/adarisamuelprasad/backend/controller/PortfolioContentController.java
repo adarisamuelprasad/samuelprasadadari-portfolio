@@ -41,6 +41,7 @@ public class PortfolioContentController {
         content.setField(contentDetails.getField());
         content.setValue(contentDetails.getValue());
         content.setType(contentDetails.getType());
+        content.setTextSize(contentDetails.getTextSize());
         return contentRepo.save(content);
     }
 

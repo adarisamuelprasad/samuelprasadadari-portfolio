@@ -56,6 +56,15 @@ public class DataSeeder implements CommandLineRunner {
                                                 "textarea"),
                                 new PortfolioContent("home", "availabilityStatus", "Available for opportunities",
                                                 "text"),
+                                new PortfolioContent("home", "flashwords",
+                                                "Java Developer, Spring Boot Developer, AI & ML Enthusiast, Computer Vision Enthusiast",
+                                                "text"),
+                                new PortfolioContent("home", "heroTechStackLabel", "Tech Stack:", "text"),
+                                new PortfolioContent("home", "heroButtonPrimary", "View My Work", "text"),
+                                new PortfolioContent("home", "heroButtonSecondary", "Get in Touch", "text"),
+                                new PortfolioContent("home", "heroScrollText", "Scroll to explore", "text"),
+                                new PortfolioContent("home", "heroBadge1", "Java Developer", "text"),
+                                new PortfolioContent("home", "heroBadge2", "AI Enthusiast", "text"),
                                 new PortfolioContent("home", "resumeUrl", "", "text"));
                 contentRepo.saveAll(homeContent);
                 System.out.println("Seeded Home content");
@@ -64,7 +73,9 @@ public class DataSeeder implements CommandLineRunner {
         private void seedAboutContent() {
                 // Seed always
                 List<PortfolioContent> aboutContent = Arrays.asList(
-                                new PortfolioContent("about", "title", "About Me", "text"),
+                                new PortfolioContent("about", "subtitle", "Get to know the developer behind the code",
+                                                "text"),
+                                new PortfolioContent("about", "headline", "Backend & AI Developer", "text"),
                                 new PortfolioContent("about", "description",
                                                 "Passionate about software development, I specialize in building robust backend systems and implementing AI solutions that solve real-world problems.",
                                                 "textarea"),
@@ -73,7 +84,18 @@ public class DataSeeder implements CommandLineRunner {
                                                 "textarea"),
                                 new PortfolioContent("about", "education",
                                                 "B.Tech in Artificial Intelligence & Machine Learning", "textarea"),
-                                new PortfolioContent("about", "yearsOfExperience", "Fresher / Open for Work", "text"));
+                                new PortfolioContent("about", "quickFactsTitle", "Quick Facts", "text"),
+                                new PortfolioContent("about", "factRoleLabel", "Role", "text"),
+                                new PortfolioContent("about", "factRoleValue", "Java Developer", "text"),
+                                new PortfolioContent("about", "factFocusLabel", "Focus", "text"),
+                                new PortfolioContent("about", "factFocusValue", "AI Enthusiast", "text"),
+                                new PortfolioContent("about", "factStatLabel", "Coffee Cups", "text"),
+                                new PortfolioContent("about", "factStatValue", "∞", "text"),
+                                new PortfolioContent("about", "factExpLabel", "Status", "text"),
+                                new PortfolioContent("about", "yearsOfExperience", "Fresher / Open for Work", "text"),
+                                new PortfolioContent("about", "skillsTitle", "Skills & Technologies", "text"),
+                                new PortfolioContent("about", "skillsSubtitle",
+                                                "Tools and technologies I work with daily", "text"));
                 contentRepo.saveAll(aboutContent);
                 System.out.println("Seeded About content");
         }
@@ -81,9 +103,17 @@ public class DataSeeder implements CommandLineRunner {
         private void seedContactContent() {
                 // Seed always
                 List<PortfolioContent> contactContent = Arrays.asList(
+                                new PortfolioContent("contact", "subtitle",
+                                                "Have a project in mind? Let's work together", "text"),
+                                new PortfolioContent("contact", "formTitle", "Get in Touch", "text"),
+                                new PortfolioContent("contact", "formDescription",
+                                                "I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.",
+                                                "textarea"),
                                 new PortfolioContent("contact", "email", "samuelprasadadari1@gmail.com", "email"),
                                 new PortfolioContent("contact", "form_email", "samuelprasadadari1@gmail.com", "email"),
                                 new PortfolioContent("contact", "location", "India", "text"),
+                                new PortfolioContent("contact", "buttonText", "Send Message", "text"),
+                                new PortfolioContent("contact", "successMessage", "Message sent successfully!", "text"),
                                 new PortfolioContent("contact", "phone", "", "text"),
                                 new PortfolioContent("contact", "linkedin", "", "url"),
                                 new PortfolioContent("contact", "github", "", "url"),

@@ -11,6 +11,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { contentApi, uploadApi } from "@/api/api";
 import SkillsManager from "@/components/SkillsManager";
 
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+
 const ContentManager = ({ section }) => {
     // We use the prop 'section' instead of internal state for navigation
     const activeSection = section || "home";
@@ -91,28 +99,23 @@ const ContentManager = ({ section }) => {
         setUploadingImage(null);
     };
 
-    const updateFieldValue = (section, field, value) => {
-        if (section === "home") {
-            setHomeContent((prev) => ({
-                ...prev,
-                [field]: { ...prev[field], value, section: "home", field, type: prev[field]?.type || "text" },
-            }));
-        } else if (section === "about") {
-            setAboutContent((prev) => ({
-                ...prev,
-                [field]: { ...prev[field], value, section: "about", field, type: prev[field]?.type || "text" },
-            }));
-        } else if (section === "skills") {
+    const updateFieldValue = (section, field, value, property = "value") => {
+        if (section === "skills") {
             setSkillsContent((prev) => ({
                 ...prev,
-                [field]: { ...prev[field], value, section: "skills", field, type: prev[field]?.type || "text" },
+                [field]: { ...prev[field], [property]: value, section: "skills", field, type: prev[field]?.type || "text" },
             }));
-        } else if (section === "contact") {
-            setContactContent((prev) => ({
-                ...prev,
-                [field]: { ...prev[field], value, section: "contact", field, type: prev[field]?.type || "text" },
-            }));
+            return;
         }
+
+        const setter = section === "home" ? setHomeContent :
+            section === "about" ? setAboutContent :
+                setContactContent;
+
+        setter((prev) => ({
+            ...prev,
+            [field]: { ...prev[field], [property]: value, section, field, type: prev[field]?.type || "text" },
+        }));
     };
 
     const saveSection = async (sectionToSave) => {
@@ -149,6 +152,28 @@ const ContentManager = ({ section }) => {
         setSaving(false);
     };
 
+    const renderTextSizeSelect = (section, field, currentValue) => (
+        <Select
+            value={currentValue || "default"}
+            onValueChange={(val) => updateFieldValue(section, field, val === "default" ? "" : val, "textSize")}
+        >
+            <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Text Size" />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="default">Default</SelectItem>
+                <SelectItem value="text-sm">Small</SelectItem>
+                <SelectItem value="text-base">Normal</SelectItem>
+                <SelectItem value="text-lg">Large</SelectItem>
+                <SelectItem value="text-xl">Extra Large</SelectItem>
+                <SelectItem value="text-2xl">2XL</SelectItem>
+                <SelectItem value="text-3xl">3XL</SelectItem>
+                <SelectItem value="text-4xl">4XL</SelectItem>
+                <SelectItem value="text-5xl">5XL</SelectItem>
+            </SelectContent>
+        </Select>
+    );
+
     const renderHomeSection = () => (
         <div className="space-y-6">
             <div className="flex items-center justify-between border-b border-border pb-4">
@@ -168,42 +193,109 @@ const ContentManager = ({ section }) => {
                 </Button>
             </div>
 
+            <div className="grid gap-6 md:grid-cols-2">
+                <div className="space-y-4">
+                    <h3 className="font-semibold text-lg border-b pb-2">Hero Text</h3>
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="text-sm font-semibold">Full Name</label>
+                            {renderTextSizeSelect("home", "name", homeContent.name?.textSize)}
+                        </div>
+                        <Input
+                            value={homeContent.name?.value || ""}
+                            onChange={(e) => updateFieldValue("home", "name", e.target.value)}
+                            placeholder="Enter your full name"
+                        />
+                    </div>
+
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="text-sm font-semibold">Primary Headline</label>
+                            {renderTextSizeSelect("home", "headline", homeContent.headline?.textSize)}
+                        </div>
+                        <Input
+                            value={homeContent.headline?.value || ""}
+                            onChange={(e) => updateFieldValue("home", "headline", e.target.value)}
+                            placeholder="e.g., Java Developer | Spring Boot Developer"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Typewriter Flash Words (Comma Separated)</label>
+                        <Input
+                            value={homeContent.flashwords?.value || ""}
+                            onChange={(e) => updateFieldValue("home", "flashwords", e.target.value)}
+                            placeholder="e.g., Java Developer, Spring Boot Developer, AI Enthusiast"
+                        />
+                    </div>
+
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="text-sm font-semibold">Introduction / Description</label>
+                            {renderTextSizeSelect("home", "description", homeContent.description?.textSize)}
+                        </div>
+                        <Textarea
+                            value={homeContent.description?.value || ""}
+                            onChange={(e) => updateFieldValue("home", "description", e.target.value)}
+                            placeholder="Write your introduction paragraph..."
+                            rows={5}
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <h3 className="font-semibold text-lg border-b pb-2">Labels & Visuals</h3>
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="text-sm font-semibold">Tech Stack Label</label>
+                            {renderTextSizeSelect("home", "heroTechStackLabel", homeContent.heroTechStackLabel?.textSize)}
+                        </div>
+                        <Input
+                            value={homeContent.heroTechStackLabel?.value || ""}
+                            onChange={(e) => updateFieldValue("home", "heroTechStackLabel", e.target.value)}
+                            placeholder="Tech Stack:"
+                        />
+                    </div>
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="text-sm font-semibold">Scroll Indicator Text</label>
+                            {renderTextSizeSelect("home", "heroScrollText", homeContent.heroScrollText?.textSize)}
+                        </div>
+                        <Input
+                            value={homeContent.heroScrollText?.value || ""}
+                            onChange={(e) => updateFieldValue("home", "heroScrollText", e.target.value)}
+                            placeholder="Scroll to explore"
+                        />
+                    </div>
+                </div>
+            </div>
             <div className="space-y-4">
+                <h3 className="font-semibold text-lg border-b pb-2">Profile & Visuals</h3>
                 <div>
-                    <label className="mb-2 block text-sm font-semibold">Full Name</label>
+                    <label className="mb-2 block text-sm font-semibold">Availability Status</label>
                     <Input
-                        value={homeContent.name?.value || ""}
-                        onChange={(e) => updateFieldValue("home", "name", e.target.value)}
-                        placeholder="Enter your full name"
+                        value={homeContent.availabilityStatus?.value || ""}
+                        onChange={(e) => updateFieldValue("home", "availabilityStatus", e.target.value)}
+                        placeholder="e.g., Available for opportunities"
                     />
                 </div>
-
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">Primary Headline</label>
-                    <Input
-                        value={homeContent.headline?.value || ""}
-                        onChange={(e) => updateFieldValue("home", "headline", e.target.value)}
-                        placeholder="e.g., Java Developer | Spring Boot Developer"
-                    />
-                </div>
-
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">Secondary Headline / Subheadline</label>
-                    <Input
-                        value={homeContent.subheadline?.value || ""}
-                        onChange={(e) => updateFieldValue("home", "subheadline", e.target.value)}
-                        placeholder="e.g., AI & ML Enthusiast | Computer Vision Enthusiast"
-                    />
-                </div>
-
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">Introduction / Description</label>
-                    <Textarea
-                        value={homeContent.description?.value || ""}
-                        onChange={(e) => updateFieldValue("home", "description", e.target.value)}
-                        placeholder="Write your introduction paragraph..."
-                        rows={5}
-                    />
+                <div className="grid gap-4 md:grid-cols-2">
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Floating Badge 1</label>
+                        <Input
+                            value={homeContent.heroBadge1?.value || ""}
+                            onChange={(e) => updateFieldValue("home", "heroBadge1", e.target.value)}
+                            placeholder="Java Developer"
+                        />
+                    </div>
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Floating Badge 2</label>
+                        <Input
+                            value={homeContent.heroBadge2?.value || ""}
+                            onChange={(e) => updateFieldValue("home", "heroBadge2", e.target.value)}
+                            placeholder="AI Enthusiast"
+                        />
+                    </div>
                 </div>
 
                 <div>
@@ -231,25 +323,6 @@ const ContentManager = ({ section }) => {
                         </div>
                     )}
                 </div>
-
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">Availability Status</label>
-                    <Input
-                        value={homeContent.availabilityStatus?.value || ""}
-                        onChange={(e) => updateFieldValue("home", "availabilityStatus", e.target.value)}
-                        placeholder="e.g., Available for opportunities"
-                    />
-                </div>
-
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">Resume / CV Link</label>
-                    <Input
-                        value={homeContent.resumeUrl?.value || ""}
-                        onChange={(e) => updateFieldValue("home", "resumeUrl", e.target.value)}
-                        placeholder="https://your-resume-link.com"
-                        type="url"
-                    />
-                </div>
             </div>
         </div>
     );
@@ -273,79 +346,151 @@ const ContentManager = ({ section }) => {
                 </Button>
             </div>
 
-            <div className="space-y-4">
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">Section Title</label>
-                    <Input
-                        value={aboutContent.title?.value || ""}
-                        onChange={(e) => updateFieldValue("about", "title", e.target.value)}
-                        placeholder="e.g., About Me"
-                    />
-                </div>
-
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">About Me Description</label>
-                    <Textarea
-                        value={aboutContent.description?.value || ""}
-                        onChange={(e) => updateFieldValue("about", "description", e.target.value)}
-                        placeholder="Write about yourself, your background, expertise..."
-                        rows={6}
-                    />
-                </div>
-
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">Mission Statement / Goal</label>
-                    <Textarea
-                        value={aboutContent.mission?.value || ""}
-                        onChange={(e) => updateFieldValue("about", "mission", e.target.value)}
-                        placeholder="Your professional mission or career goal..."
-                        rows={4}
-                    />
-                </div>
-
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">Years of Experience</label>
-                    <Input
-                        value={aboutContent.yearsOfExperience?.value || ""}
-                        onChange={(e) => updateFieldValue("about", "yearsOfExperience", e.target.value)}
-                        placeholder="e.g., 2+ years"
-                    />
-                </div>
-
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">Education</label>
-                    <Textarea
-                        value={aboutContent.education?.value || ""}
-                        onChange={(e) => updateFieldValue("about", "education", e.target.value)}
-                        placeholder="Your educational background..."
-                        rows={3}
-                    />
-                </div>
-
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">About Image (Optional)</label>
-                    <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) handleImageUpload("about", "aboutImage", file);
-                        }}
-                        disabled={uploadingImage === "about_aboutImage"}
-                        className="cursor-pointer"
-                    />
-                    {uploadingImage === "about_aboutImage" && <p className="mt-2 text-sm text-muted-foreground">Uploading...</p>}
-                    {aboutContent.aboutImage?.value && (
-                        <div className="relative mt-2 h-40 w-full overflow-hidden rounded-md border">
-                            <img src={aboutContent.aboutImage.value} alt="About" className="h-full w-full object-cover" />
-                            <button
-                                onClick={() => updateFieldValue("about", "aboutImage", "")}
-                                className="absolute right-2 top-2 rounded-full bg-destructive p-1 text-destructive-foreground hover:bg-destructive/90"
-                            >
-                                <X size={14} />
-                            </button>
+            <div className="grid gap-6 md:grid-cols-2">
+                <div className="space-y-4">
+                    <h3 className="font-semibold text-lg border-b pb-2">Main Content</h3>
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="text-sm font-semibold">Main Heading (Title)</label>
+                            {renderTextSizeSelect("about", "title", aboutContent.title?.textSize)}
                         </div>
-                    )}
+                        <Input
+                            value={aboutContent.title?.value || ""}
+                            onChange={(e) => updateFieldValue("about", "title", e.target.value)}
+                            placeholder="About Me"
+                        />
+                    </div>
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="text-sm font-semibold">Subtitle</label>
+                            {renderTextSizeSelect("about", "subtitle", aboutContent.subtitle?.textSize)}
+                        </div>
+                        <Input
+                            value={aboutContent.subtitle?.value || ""}
+                            onChange={(e) => updateFieldValue("about", "subtitle", e.target.value)}
+                            placeholder="Get to know the developer..."
+                        />
+                    </div>
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="text-sm font-semibold">Introduction Headline</label>
+                            {renderTextSizeSelect("about", "headline", aboutContent.headline?.textSize)}
+                        </div>
+                        <Input
+                            value={aboutContent.headline?.value || ""}
+                            onChange={(e) => updateFieldValue("about", "headline", e.target.value)}
+                            placeholder="Backend & AI Developer"
+                        />
+                    </div>
+
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="text-sm font-semibold">Description</label>
+                            {renderTextSizeSelect("about", "description", aboutContent.description?.textSize)}
+                        </div>
+                        <Textarea
+                            value={aboutContent.description?.value || ""}
+                            onChange={(e) => updateFieldValue("about", "description", e.target.value)}
+                            placeholder="Write about yourself..."
+                            rows={6}
+                        />
+                    </div>
+
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="text-sm font-semibold">Mission Statement / Goal</label>
+                            {renderTextSizeSelect("about", "mission", aboutContent.mission?.textSize)}
+                        </div>
+                        <Textarea
+                            value={aboutContent.mission?.value || ""}
+                            onChange={(e) => updateFieldValue("about", "mission", e.target.value)}
+                            placeholder="My journey began..."
+                            rows={4}
+                        />
+                    </div>
+                    <div>
+                        <div className="flex items-center justify-between mb-2">
+                            <label className="text-sm font-semibold">Education Text</label>
+                            {renderTextSizeSelect("about", "education", aboutContent.education?.textSize)}
+                        </div>
+                        <Textarea
+                            value={aboutContent.education?.value || ""}
+                            onChange={(e) => updateFieldValue("about", "education", e.target.value)}
+                            placeholder="Your educational background..."
+                            rows={3}
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <h3 className="font-semibold text-lg border-b pb-2">Quick Facts</h3>
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Section Title</label>
+                        <Input
+                            value={aboutContent.quickFactsTitle?.value || ""}
+                            onChange={(e) => updateFieldValue("about", "quickFactsTitle", e.target.value)}
+                            placeholder="Quick Facts"
+                        />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="mb-2 block text-xs font-semibold uppercase text-muted-foreground">Label 1</label>
+                            <Input value={aboutContent.factRoleLabel?.value || ""} onChange={(e) => updateFieldValue("about", "factRoleLabel", e.target.value)} placeholder="Role" />
+                        </div>
+                        <div>
+                            <label className="mb-2 block text-xs font-semibold uppercase text-muted-foreground">Value 1</label>
+                            <Input value={aboutContent.factRoleValue?.value || ""} onChange={(e) => updateFieldValue("about", "factRoleValue", e.target.value)} placeholder="Java Developer" />
+                        </div>
+                        <div>
+                            <label className="mb-2 block text-xs font-semibold uppercase text-muted-foreground">Label 2</label>
+                            <Input value={aboutContent.factFocusLabel?.value || ""} onChange={(e) => updateFieldValue("about", "factFocusLabel", e.target.value)} placeholder="Focus" />
+                        </div>
+                        <div>
+                            <label className="mb-2 block text-xs font-semibold uppercase text-muted-foreground">Value 2</label>
+                            <Input value={aboutContent.factFocusValue?.value || ""} onChange={(e) => updateFieldValue("about", "factFocusValue", e.target.value)} placeholder="AI Enthusiast" />
+                        </div>
+                        <div>
+                            <label className="mb-2 block text-xs font-semibold uppercase text-muted-foreground">Label 3</label>
+                            <Input value={aboutContent.factStatLabel?.value || ""} onChange={(e) => updateFieldValue("about", "factStatLabel", e.target.value)} placeholder="Coffee Cups" />
+                        </div>
+                        <div>
+                            <label className="mb-2 block text-xs font-semibold uppercase text-muted-foreground">Value 3</label>
+                            <Input value={aboutContent.factStatValue?.value || ""} onChange={(e) => updateFieldValue("about", "factStatValue", e.target.value)} placeholder="Infinity" />
+                        </div>
+                        <div>
+                            <label className="mb-2 block text-xs font-semibold uppercase text-muted-foreground">Label 4</label>
+                            <Input value={aboutContent.factExpLabel?.value || ""} onChange={(e) => updateFieldValue("about", "factExpLabel", e.target.value)} placeholder="Status" />
+                        </div>
+                        <div>
+                            <label className="mb-2 block text-xs font-semibold uppercase text-muted-foreground">Value 4</label>
+                            <Input
+                                value={aboutContent.yearsOfExperience?.value || ""}
+                                onChange={(e) => updateFieldValue("about", "yearsOfExperience", e.target.value)}
+                                placeholder="Open for Work"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="space-y-4">
+                <h3 className="font-semibold text-lg border-b pb-2">Skills Section Headers</h3>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Skills Title</label>
+                        <Input
+                            value={aboutContent.skillsTitle?.value || ""}
+                            onChange={(e) => updateFieldValue("about", "skillsTitle", e.target.value)}
+                            placeholder="Skills & Technologies"
+                        />
+                    </div>
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Skills Subtitle</label>
+                        <Input
+                            value={aboutContent.skillsSubtitle?.value || ""}
+                            onChange={(e) => updateFieldValue("about", "skillsSubtitle", e.target.value)}
+                            placeholder="Tools and technologies..."
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -378,78 +523,123 @@ const ContentManager = ({ section }) => {
                 </Button>
             </div>
 
+            <div className="grid gap-6 md:grid-cols-2">
+                <div className="space-y-4">
+                    <h3 className="font-semibold text-lg border-b pb-2">Page Headers</h3>
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Subtitle</label>
+                        <Input
+                            value={contactContent.subtitle?.value || ""}
+                            onChange={(e) => updateFieldValue("contact", "subtitle", e.target.value)}
+                            placeholder="Have a project in mind?..."
+                        />
+                    </div>
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Form Title</label>
+                        <Input
+                            value={contactContent.formTitle?.value || ""}
+                            onChange={(e) => updateFieldValue("contact", "formTitle", e.target.value)}
+                            placeholder="Get in Touch"
+                        />
+                    </div>
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Form Description</label>
+                        <Textarea
+                            value={contactContent.formDescription?.value || ""}
+                            onChange={(e) => updateFieldValue("contact", "formDescription", e.target.value)}
+                            placeholder="I'm always open to..."
+                        />
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <h3 className="font-semibold text-lg border-b pb-2">Details</h3>
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Email Address (Display)</label>
+                        <Input
+                            type="email"
+                            value={contactContent.email?.value || ""}
+                            onChange={(e) => updateFieldValue("contact", "email", e.target.value)}
+                            placeholder="your.email@example.com"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Phone Number</label>
+                        <Input
+                            value={contactContent.phone?.value || ""}
+                            onChange={(e) => updateFieldValue("contact", "phone", e.target.value)}
+                            placeholder="+91 XXXXXXXXXX"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Location / City</label>
+                        <Input
+                            value={contactContent.location?.value || ""}
+                            onChange={(e) => updateFieldValue("contact", "location", e.target.value)}
+                            placeholder="e.g., Mumbai, India"
+                        />
+                    </div>
+                </div>
+            </div>
+
             <div className="space-y-4">
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">Email Address</label>
-                    <Input
-                        type="email"
-                        value={contactContent.email?.value || ""}
-                        onChange={(e) => updateFieldValue("contact", "email", e.target.value)}
-                        placeholder="your.email@example.com"
-                    />
+                <h3 className="font-semibold text-lg border-b pb-2">Messages</h3>
+                <div className="grid gap-4 md:grid-cols-2">
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Success Message</label>
+                        <Input
+                            value={contactContent.successMessage?.value || ""}
+                            onChange={(e) => updateFieldValue("contact", "successMessage", e.target.value)}
+                            placeholder="Message sent successfully!"
+                        />
+                    </div>
                 </div>
+            </div>
 
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">Phone Number</label>
-                    <Input
-                        value={contactContent.phone?.value || ""}
-                        onChange={(e) => updateFieldValue("contact", "phone", e.target.value)}
-                        placeholder="+91 XXXXXXXXXX"
-                    />
-                </div>
+            <div className="border-t border-border pt-4">
+                <h3 className="mb-3 text-lg font-semibold">Social Links</h3>
 
-                <div>
-                    <label className="mb-2 block text-sm font-semibold">Location / City</label>
-                    <Input
-                        value={contactContent.location?.value || ""}
-                        onChange={(e) => updateFieldValue("contact", "location", e.target.value)}
-                        placeholder="e.g., Mumbai, India"
-                    />
-                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">LinkedIn Profile URL</label>
+                        <Input
+                            type="url"
+                            value={contactContent.linkedin?.value || ""}
+                            onChange={(e) => updateFieldValue("contact", "linkedin", e.target.value)}
+                            placeholder="https://www.linkedin.com/in/yourprofile"
+                        />
+                    </div>
 
-                <div className="border-t border-border pt-4">
-                    <h3 className="mb-3 text-lg font-semibold">Social Links</h3>
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">GitHub Profile URL</label>
+                        <Input
+                            type="url"
+                            value={contactContent.github?.value || ""}
+                            onChange={(e) => updateFieldValue("contact", "github", e.target.value)}
+                            placeholder="https://github.com/yourusername"
+                        />
+                    </div>
 
-                    <div className="space-y-3">
-                        <div>
-                            <label className="mb-2 block text-sm font-semibold">LinkedIn Profile URL</label>
-                            <Input
-                                type="url"
-                                value={contactContent.linkedin?.value || ""}
-                                onChange={(e) => updateFieldValue("contact", "linkedin", e.target.value)}
-                                placeholder="https://www.linkedin.com/in/yourprofile"
-                            />
-                        </div>
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Twitter / X Profile URL</label>
+                        <Input
+                            type="url"
+                            value={contactContent.twitter?.value || ""}
+                            onChange={(e) => updateFieldValue("contact", "twitter", e.target.value)}
+                            placeholder="https://twitter.com/yourusername"
+                        />
+                    </div>
 
-                        <div>
-                            <label className="mb-2 block text-sm font-semibold">GitHub Profile URL</label>
-                            <Input
-                                type="url"
-                                value={contactContent.github?.value || ""}
-                                onChange={(e) => updateFieldValue("contact", "github", e.target.value)}
-                                placeholder="https://github.com/yourusername"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="mb-2 block text-sm font-semibold">Twitter / X Profile URL</label>
-                            <Input
-                                type="url"
-                                value={contactContent.twitter?.value || ""}
-                                onChange={(e) => updateFieldValue("contact", "twitter", e.target.value)}
-                                placeholder="https://twitter.com/yourusername"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="mb-2 block text-sm font-semibold">Portfolio / Personal Website</label>
-                            <Input
-                                type="url"
-                                value={contactContent.website?.value || ""}
-                                onChange={(e) => updateFieldValue("contact", "website", e.target.value)}
-                                placeholder="https://yourwebsite.com"
-                            />
-                        </div>
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold">Portfolio / Personal Website</label>
+                        <Input
+                            type="url"
+                            value={contactContent.website?.value || ""}
+                            onChange={(e) => updateFieldValue("contact", "website", e.target.value)}
+                            placeholder="https://yourwebsite.com"
+                        />
                     </div>
                 </div>
             </div>

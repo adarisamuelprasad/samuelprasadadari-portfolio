@@ -15,7 +15,7 @@ const Index = () => {
         const response = await contentApi.getBySection("home");
         const contentMap = {};
         response.data.forEach(item => {
-          contentMap[item.field] = item.value;
+          contentMap[item.field] = { ...item };
         });
         setContent(contentMap);
       } catch (error) {
@@ -47,16 +47,25 @@ const Index = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
       className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2"
-    ><span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" /><span className="relative inline-flex h-2 w-2 rounded-full bg-primary" /></span><span className="text-sm text-primary">{content.availabilityStatus || "Available for opportunities"}</span></motion.div><h1 className="mb-6 text-3xl font-bold leading-tight md:text-4xl lg:text-5xl">
-          Hi, I'm{" "}<span className="gradient-text">{content.name || "Adari Samuel Prasad"}</span><br />
-          <span className="text-xl md:text-3xl lg:text-4xl">
-            <TypeWriter words={[content.headline || roles[0], content.headline?.split("|")[1]?.trim() || roles[1], content.subheadline || roles[2], content.subheadline?.split("|")[1]?.trim() || roles[3]].filter(Boolean)} />
-          </span></h1><p className="mb-8 max-w-lg text-lg text-muted-foreground">
-          {content.description || "A passionate B.Tech student specializing in Artificial Intelligence & Machine Learning..."}
+    ><span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" /><span className="relative inline-flex h-2 w-2 rounded-full bg-primary" /></span><span className="text-sm text-primary">{content.availabilityStatus?.value || "Available for opportunities"}</span></motion.div><h1 className={`mb-6 font-bold leading-tight ${content.headline?.textSize ? content.headline.textSize : 'text-3xl md:text-4xl lg:text-5xl'}`}>
+          Hi, I'm{" "}<span className={`gradient-text ${content.name?.textSize || ''}`}>{content.name?.value || "Adari Samuel Prasad"}</span><br />
+          <span className={`block ${content.subheadline?.textSize ? content.subheadline.textSize : 'text-xl md:text-3xl lg:text-4xl'}`}>
+            <TypeWriter words={
+              content.flashwords?.value
+                ? content.flashwords.value.split(",").map(w => w.trim()).filter(Boolean)
+                : [
+                  content.headline?.value || roles[0],
+                  content.headline?.value?.split("|")[1]?.trim() || roles[1],
+                  content.subheadline?.value || roles[2],
+                  content.subheadline?.value?.split("|")[1]?.trim() || roles[3]
+                ].filter(Boolean)
+            } />
+          </span></h1><p className={`mb-8 max-w-lg text-muted-foreground ${content.description?.textSize ? content.description.textSize : 'text-lg'}`}>
+          {content.description?.value || "A passionate B.Tech student specializing in Artificial Intelligence & Machine Learning..."}
         </p><div className="flex flex-wrap gap-4"><Link to="/projects" className="btn-primary">
-          View My Work
+          {content.heroButtonPrimary?.value || "View My Work"}
         </Link><Link to="/contact" className="btn-outline">
-            Get in Touch
+            {content.heroButtonSecondary?.value || "Get in Touch"}
           </Link></div>{
           /* Tech stack icons */
         }<motion.div
@@ -64,7 +73,7 @@ const Index = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
           className="mt-12 flex items-center gap-6"
-        ><span className="text-sm text-muted-foreground">Tech Stack:</span><div className="flex gap-3">{[Code2, Database, Brain, Cpu].map((Icon, i) => <motion.div
+        ><span className={`text-muted-foreground ${content.heroTechStackLabel?.textSize ? content.heroTechStackLabel.textSize : 'text-sm'}`}>{content.heroTechStackLabel?.value || "Tech Stack:"}</span><div className="flex gap-3">{[Code2, Database, Brain, Cpu].map((Icon, i) => <motion.div
           key={i}
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -82,7 +91,7 @@ const Index = () => {
       }<div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/30 to-accent/30 blur-3xl" />{
             /* Profile image container */
           }<div className="relative h-64 w-64 overflow-hidden rounded-full border-4 border-primary/20 md:h-80 md:w-80"><div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-accent/20" /><img
-            src={content.profileImage || "/images/Samuel.jpg"}
+            src={content.profileImage?.value || "/images/Samuel.jpg"}
             alt="Adari Samuel Prasad"
             className="h-full w-full object-cover"
           /></div>{
@@ -91,11 +100,11 @@ const Index = () => {
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 3, repeat: Infinity }}
             className="glass-card absolute -left-20 top-1/4 px-4 py-2"
-          ><span className="text-sm font-medium text-primary">Java Developer</span></motion.div><motion.div
+          ><span className="text-sm font-medium text-primary">{content.heroBadge1?.value || "Java Developer"}</span></motion.div><motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 3, repeat: Infinity, delay: 1 }}
             className="glass-card absolute -right-4 bottom-1/4 px-4 py-2"
-          ><span className="text-sm font-medium text-accent">AI Enthusiast</span></motion.div></div></motion.div></div>{
+          ><span className="text-sm font-medium text-accent">{content.heroBadge2?.value || "AI Enthusiast"}</span></motion.div></div></motion.div></div>{
         /* Scroll indicator */
       }<motion.div
         initial={{ opacity: 0 }}
@@ -106,6 +115,6 @@ const Index = () => {
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 1.5, repeat: Infinity }}
         className="flex flex-col items-center gap-2 text-muted-foreground"
-      ><span className="text-xs">Scroll to explore</span><ArrowDown size={16} /></motion.div></motion.div></div></section></main>;
+      ><span className={`text-xs ${content.heroScrollText?.textSize || ''}`}>{content.heroScrollText?.value || "Scroll to explore"}</span><ArrowDown size={16} /></motion.div></motion.div></div></section></main>;
 };
 export default Index;

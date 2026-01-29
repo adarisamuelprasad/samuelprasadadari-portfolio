@@ -13,6 +13,7 @@ public class PortfolioContent {
     private String field; // "headline", "subheadline", "description", "email", etc.
     private String value; // The actual content
     private String type; // "text", "textarea", "image", "email", "phone", "url"
+    private String textSize; // e.g., "text-sm", "text-xl", "text-4xl"
 
     public PortfolioContent() {
     }
@@ -62,5 +63,13 @@ public class PortfolioContent {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getTextSize() {
+        return textSize;
+    }
+
+    public void setTextSize(String textSize) {
+        this.textSize = textSize;
     }
 }
